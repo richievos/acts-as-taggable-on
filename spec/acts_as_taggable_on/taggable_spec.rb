@@ -56,6 +56,13 @@ describe "Taggable" do
     TaggableModel.find_tagged_with("bob", :on => :tags).first.should == @taggable
   end
   
+  it "should be able to find by tag with multiple contexts" do
+    @taggable.skill_list = "ruby, rails, css"
+    @taggable.tag_list = "bob, charlie"
+    @taggable.save
+    TaggableModel.find_tagged_with("bob", :on => [:skills, :tags]).first.should == @taggable
+  end
+  
   it "should be able to use the tagged_with named scope" do
     @taggable.skill_list = "ruby, rails, css"
     @taggable.tag_list = "bob, charlie"

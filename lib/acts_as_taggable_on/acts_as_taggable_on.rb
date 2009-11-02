@@ -138,7 +138,12 @@ module ActiveRecord
           conditions << sanitize_sql(options.delete(:conditions)) if options[:conditions]
           
           unless (on = options.delete(:on)).nil?
-            conditions << sanitize_sql(["context = ?",on.to_s])
+            context_sql = if on.is_a?(Array)
+              ["context in (?)", on.map(&:to_s)]
+            else
+              ["context = ?", on.to_s]
+            end
+            conditions << sanitize_sql(context_sql)
           end
 
           taggings_alias, tags_alias = "#{table_name}_taggings", "#{table_name}_tags"
